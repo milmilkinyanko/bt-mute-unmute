@@ -7,6 +7,7 @@ while True:
         # ls /dev/input でevent番号要確認
         device = evdev.InputDevice('/dev/input/event18')
         print(device)
+        device.grab() # get exclusive access
 
         for event in device.read_loop():
             if event.type == evdev.ecodes.EV_KEY:
