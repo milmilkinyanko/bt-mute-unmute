@@ -10,17 +10,21 @@ async def helper(dev):
                 print(event.code)
                 # if event.code == evdev.ecodes.KEY_VOLUMEUP:
                 if event.code == evdev.ecodes.BTN_LEFT:
+                    # unmute
+                    subprocess.Popen(['aplay', '/usr/share/sounds/sound-icons/hash'])
                     subprocess.Popen(['amixer', 'set', 'Capture','cap'])
                 # if event.code == evdev.ecodes.KEY_ENTER:
                 if event.code == evdev.ecodes.BTN_RIGHT:
+                    # mute
                     subprocess.Popen(['amixer', 'set', 'Capture','nocap'])
+                    subprocess.Popen(['aplay', '/usr/share/sounds/sound-icons/capital'])
 
 
 
 def main():
     try:
-        # ls /dev/input でevent番号要確認
-        device = evdev.InputDevice('/dev/input/event7')
+        devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+        device = next(i for i in devices if i.name.find("M57") != -1)
         print(device)
         device.grab() # get exclusive access
     
