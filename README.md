@@ -10,11 +10,11 @@
 - ALSA
 
 ## Usage
-### 初回のみ
+### For the First Time
 1. `# cp 99-ABShutter.rules /etc/udev/rules.d/`
 1. `# udevadm trigger`
-### 毎回
-1. BluetoothボタンをPCに接続
+### Everytime
+1. Connect the Bluetooth button
 1. `$ python3 mute.py`
 
 ## 参考
