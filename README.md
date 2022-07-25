@@ -9,6 +9,17 @@
 - evdev (pip module)
 - ALSA
 
+## Usage
+1. `$ls /dev/input > pre`
+1. BluetoothでボタンをPCに接続
+1. `$ls /dev/input > post`
+1. `$diff pre post`
+    - このときのevent番号を記録
+    - 以下では、event17とevent18であったとする
+1. `#chmod 666 /dev/input/event17`
+1. `#chmod 666 /dev/input/event18`
+1. `$python3 mute.py`
+
 ## 参考
 - https://monomonotech.jp/kurage/raspberrypi/daiso_btshutter.html
 - https://flechasdesk.blogspot.com/2020/04/blog-post.html
