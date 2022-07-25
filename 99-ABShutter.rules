@@ -1,0 +1,2 @@
+KERNEL=="event*", ATTRS{name}=="AB Shutter3 Keyboard", MODE="666"
+KERNEL=="event*", ATTRS{name}=="AB Shutter3 Consumer Control", MODE="666"
