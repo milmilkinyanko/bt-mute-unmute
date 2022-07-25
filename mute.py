@@ -3,6 +3,14 @@ import evdev
 import subprocess
 import time
 
+def custom_exception_handler(loop, context):
+    # first, handle with default handler
+    loop.default_exception_handler(context)
+
+    exception = context.get('exception')
+    print(exception)
+    loop.stop()
+
 async def readEvents(device):
     async for event in device.async_read_loop():
         if event.type == evdev.ecodes.EV_KEY:
@@ -17,22 +25,30 @@ async def readEvents(device):
                     subprocess.Popen(['amixer', 'set', 'Capture','nocap'])
                     subprocess.Popen(['aplay', '/usr/share/sounds/sound-icons/capital'])
 
+def loop():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.set_exception_handler(custom_exception_handler)
+
+    devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+    print(devices)
+
+    if len(devices) == 0:
+        raise Exception("device num is 0")
+
+    for device in devices:
+        if device.name.find("AB") != -1:
+            print(device)
+            device.grab() # get exclusive access
+            asyncio.ensure_future(readEvents(device), loop=loop)
+
+    loop.run_forever()
+
 def main():
-    try:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
-        devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
-        print(devices)
-        for device in devices:
-            if device.name.find("AB") != -1:
-                print(device)
-                device.grab() # get exclusive access
-                asyncio.ensure_future(readEvents(device), loop=loop)
-
-        loop.run_forever()
-
-    except Exception as e:
+    while True:
+        try:
+            loop()
+        except Exception as e:
             print(e)
             print('Retry...')
             time.sleep(1)
