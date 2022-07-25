@@ -19,15 +19,17 @@ async def readEvents(device):
 
 def main():
     try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
         devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
         print(devices)
         for device in devices:
             if device.name.find("AB") != -1:
                 print(device)
                 device.grab() # get exclusive access
-                asyncio.ensure_future(readEvents(device))
+                asyncio.ensure_future(readEvents(device), loop=loop)
 
-        loop = asyncio.get_event_loop()
         loop.run_forever()
 
     except Exception as e:
