@@ -7,7 +7,7 @@
 ## Requirements
 - python3.5+
 - evdev (pip module)
-- ALSA
+- PulseAudio
 
 ## Usage
 ### For the First Time
