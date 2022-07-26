@@ -19,10 +19,10 @@ async def readEvents(device):
                 if event.code == evdev.ecodes.KEY_VOLUMEUP:
                     # unmute
                     subprocess.Popen(['aplay', '/usr/share/sounds/sound-icons/hash'])
-                    subprocess.Popen(['amixer', 'set', 'Capture','cap'])
+                    subprocess.Popen(['pactl', 'set-sink-mute', '@DEFAULT_SINK@', 'false'])
                 if event.code == evdev.ecodes.KEY_VOLUMEDOWN:
                     # mute
-                    subprocess.Popen(['amixer', 'set', 'Capture','nocap'])
+                    subprocess.Popen(['pactl', 'set-sink-mute', '@DEFAULT_SINK@', 'true'])
                     subprocess.Popen(['aplay', '/usr/share/sounds/sound-icons/capital'])
 
 def loop():
