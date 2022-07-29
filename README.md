@@ -2,7 +2,7 @@
 
 ## Features
 - Amazonで買った[300円Bluetoothボタン](https://www.amazon.co.jp/gp/product/B00JX70WK4)を使ってマイクをミュート/アンミュートするスクリプト
-- amixerを使ってマイクのインプットボリュームをいじることでどんなチャットツールであってもミュート/アンミュート可能
+- PulseAudioを使ってマイクのインプットボリュームをいじることでどんなチャットツールであってもミュート/アンミュート可能
 
 ## Requirements
 - python3.5+
