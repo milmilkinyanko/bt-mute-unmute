@@ -12,18 +12,34 @@ def custom_exception_handler(loop, context):
     loop.stop()
 
 async def readEvents(device):
+    time_down = 0.0
     async for event in device.async_read_loop():
         if event.type == evdev.ecodes.EV_KEY:
+            print(event)
             if event.value == 1: # 0:KEYUP, 1:KEYDOWN
+                time_down = time.time()
+            elif event.value == 0: # 0:KEYUP, 1:KEYDOWN
+                time_up = time.time()
+                threshold = 0.3
+                delay = time_up - time_down
+                print(delay)
                 print(event.code)
                 if event.code == evdev.ecodes.KEY_VOLUMEUP:
-                    # unmute
-                    subprocess.Popen(['aplay', '/usr/share/sounds/sound-icons/hash'])
-                    subprocess.Popen(['pactl', 'set-source-mute', '@DEFAULT_SOURCE@', 'false'])
+                    if delay > threshold:
+                        plus_volume = '+' + str(int(delay*20)) + '%'
+                        subprocess.Popen(['pactl', 'set-sink-volume', '@DEFAULT_SINK@', plus_volume])
+                    else:
+                        # unmute
+                        subprocess.Popen(['aplay', '/usr/share/sounds/sound-icons/hash'])
+                        subprocess.Popen(['pactl', 'set-source-mute', '@DEFAULT_SOURCE@', 'false'])
                 if event.code == evdev.ecodes.KEY_VOLUMEDOWN:
-                    # mute
-                    subprocess.Popen(['pactl', 'set-source-mute', '@DEFAULT_SOURCE@', 'true'])
-                    subprocess.Popen(['aplay', '/usr/share/sounds/sound-icons/capital'])
+                    if delay > threshold:
+                        minus_volume = '-' + str(int(delay*20)) + '%'
+                        subprocess.Popen(['pactl', 'set-sink-volume', '@DEFAULT_SINK@', minus_volume])
+                    else:
+                        # mute
+                        subprocess.Popen(['pactl', 'set-source-mute', '@DEFAULT_SOURCE@', 'true'])
+                        subprocess.Popen(['aplay', '/usr/share/sounds/sound-icons/capital'])
 
 def loop():
     loop = asyncio.new_event_loop()
